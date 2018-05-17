@@ -17,7 +17,8 @@ docker-search is a bash script for listing images in a private registry v2.  It 
 ## Install
 To install, change directory to the location you want to download the script.  Use git to pull or clone this script into your directory.  If you do not have git installed then enter; "sudo apt-get install git".  On the github page of this script use the "HTTPS clone URL" with the 'git clone' command. 
 
-    git clone https://github.com/BradleyA/Search-docker-registry-v2-script.git
+    git clone https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git
+
     cd Search-docker-registry-v2-script
 
 Edit docker-search script, change PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY to the path to your registry storage filesystem root directry.  It is the volume you used when you started registry v2 container (/var/lib/registry).
