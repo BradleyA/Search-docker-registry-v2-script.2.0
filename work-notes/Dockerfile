@@ -1,8 +1,11 @@
 # %W% %G% %U%
+#		Dockerfile  0.04.18  2018-05-17_17:58:20_CDT  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uthree  three.cptx86.com 0.03  
+#		   testing markit 
 #		Dockerfile  0.03.17  2018-05-17_17:45:36_CDT  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uthree  three.cptx86.com 0.02  
 #		   continue testing #23 
 #		Dockerfile  0.02.16  2018-05-17_17:39:45_CDT  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uthree  three.cptx86.com No-parent-git-tag-found-in-repository  
 #		   initial commit test 3 
+
 #
 FROM registry:latest
 # Dockerfile maintainer
