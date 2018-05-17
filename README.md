@@ -3,6 +3,15 @@
 ### STOP:  This is NOT ready for development or production
 #### WARNING: These instructions are incomplete. Consider them as notes quickly drafted on a napkin rather than proper documentation!
 
+#### Support more than one private registry:v2 on the same host
+
+#### Support different namespace(s)
+
+#### Support encripted registry
+
+#### Test Docker fixes this problem by providing an underlying framework called Docker Content Trust which verified images before running the container. Not just that, it constantly polls the Docker registry for any updates in the image and if there is, it is fetched before launching the container. The engine behind enforcing and managing this trust is Docker Notary, a Docker service which is implemented based on The Update Framework (TUF).
+
+#### TUF is a specification for secure software distribution. It establishes trust using a hierarchy of roles represented by asymmetric keys and metadata signed using these asymmetric keys. A key hierarchy of root key, snapshot key, timestamp key and target keys together provide several security guarantees like freshness guarantees, survivable key compromise, etc. The root key is the root of all trust that signs the root metadata. The snapshot metadata is a collection of hashes of all the files for a given snapshot of the image.   https://medium.com/walmartlabs/docker-notary-very-tuf-but-devil-is-in-the-detail-5e643ea0aa16
 
 docker-search is a bash script for listing images in a private registry v2.  It does not require registry v2 to be running on the system, only the filesystem where the images are stored.  Docker search registry v2 functionality is currently not supported at the time of this writing. See discussion since Feb 2015: "propose registry search functionality #206" https://github.com/docker/distribution/issues/206
 ## Install
