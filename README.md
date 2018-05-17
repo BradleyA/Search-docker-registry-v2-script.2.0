@@ -1,4 +1,4 @@
-# Search-docker-registry-v2-script
+## Search-docker-registry-v2-script
 
 #### WARNING: These instructions are incomplete. Consider them as notes quickly drafted on a napkin rather than proper documentation!
 
