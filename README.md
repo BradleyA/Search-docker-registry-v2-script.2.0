@@ -1,6 +1,6 @@
 ## Search-docker-registry-v2-script.2.0
 
-### STOP:  This is NOT ready for development or production
+### STOP:  This is NOT ready for development or production ... it is in design, prototyping the design, and hopfully development and test
 #### WARNING: These instructions are incomplete. Consider them as notes quickly drafted on a napkin rather than proper documentation!
 
 #### Support more than one private registry:v2 on the same host
