@@ -1,0 +1,66 @@
+#!/bin/bash
+#	view-private-registry  0.07.21  2018-05-19_09:40:32_CDT  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uthree  three.cptx86.com 0.06  
+#	   initital commit 
+# %W% %G% %U%
+#	set -x
+#	set -v
+#
+#	View private registry v2,
+#		if PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY is mounted on your system
+#	Set variable PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY below:
+#
+ARG1=$1
+ARG2=$2
+#	If $ARG1 is not set then check if $REGISTRY_PORT is set and use or set default registry port 5000
+#	If $ARG1 is not set to --help, -?, -h, ? then use ARG1 for registry port else display command syntax
+if [ -z $ARG1 ]; then
+	if [ -z $REGISTRY_PORT ]; then
+#		Set default registry port
+		REGISTRY_PORT=5000
+	fi
+else
+#	ARG1 NOT BLANK
+	if [ $ARG1 == "--help" ] || [ $ARG1 == "-?" ] || [ $ARG1 == "-h" ] || [ $ARG1 == "?" ] ; then
+		echo -e "\nUsage: view-private-registry [OPTIONS] [ARG1] [ARG2]\n"
+		echo -e "Search the private registry v2 for images\n"
+		echo -e "Options:\n	--help   Print usage"
+		echo -e "\nCommands:"
+		echo -e "ARG1	Private registry port number (default 5000)"
+		echo -e "ARG2	Search private registry"
+		exit
+	fi
+	REGISTRY_PORT=$ARG1
+fi
+#	PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+if [ -z $PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY ]; then
+#	Hard code the full path to your private registry v2
+        PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="/usr/local/docker-registry-$REGISTRY_PORT/docker"
+else
+#       Or set environment variable PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY to a filesystem directory to store images (example: /usr/local)
+	PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=$PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY"/docker-registry-$REGISTRY_PORT/docker"
+fi
+echo -e "\nPersistent Registry Storage ->" $PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+#	Create image information in a file
+find $PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY -print | \
+	grep 'v2/repositories' | \
+	grep 'current' | \
+	grep -v 'link' | \
+	sed -e 's/\/_manifests\/tags\//:/' | \
+	sed -e 's/\/current//' | \
+	sed -e 's/^.*repositories\//	/' | \
+	sort > /tmp/a1
+#       If $ARG2 is set then filter the image output with $ARG2
+if [ -z $ARG2 ]; then
+	cat /tmp/a1
+else
+#	Filter output for prod, dev, tag-name or anything
+	cat /tmp/a1 | grep $ARG2
+	cat /tmp/a1 | grep $ARG2 > /tmp/a3
+	wc -l /tmp/a3 > /tmp/a4
+	echo "Number of filtered images found:	`cat /tmp/a4 | awk {'print $1'}`"
+	rm /tmp/a3 /tmp/a4
+fi
+wc -l /tmp/a1 > /tmp/a2
+echo "Total number of stored images:		`cat /tmp/a2 | awk {'print $1'}`"
+echo "Total disk space used:	`du -hs $PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY`"
+rm /tmp/a1 /tmp/a2

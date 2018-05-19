@@ -1,0 +1,66 @@
+
+#	Response-to-search  0.07.21  2018-05-19_09:40:32_CDT  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uthree  three.cptx86.com 0.06  
+#	   initital commit 
+ln -s  /home/three/mnt-three/docker-registry/view-private-registry /usr/local/bin/view-private-registry
+chmod 755 /home/three/mnt-three/docker-registry/view-private-registry
+
+
+
+
+http://stackoverflow.com/questions/30113726/docker-registry-2-0-api-v2
+
+Docker registry search functionality v2 is not supported at the time of this writing. See discussion since Feb 2015: https://github.com/docker/distribution/issues/206
+
+Registry V2 is like dropping images into a black bag, hope you remember what you dropped in and what you named the image. Don't even think about deleting an image. I do not want to rip and replace V2 with V1; even though V1 works and has several tools that work with V1 including search and delete. I started with registry V2 from the marketing; better security and performance.
+
+Ubuntu 14.04.3 LTS, CoreOS 723.3.0 registry github.com/docker/distribution v2.1.1
+
+I wrote a script, named view-private-registry to search registry V2 REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY. It works on any of my systems that has the REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY mounted. Let me know of any changes you would make, thanks.
+
+Script:
+
+#!/bin/bash
+# %W% %G% %U%
+#
+#       View private registry,
+#               if REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY is mounted on your system
+#
+REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="/mnt/three/docker-registry/registry-data"
+#
+find $REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY -print | \
+    grep 'v2/repositories' | \
+    grep 'current' | \
+    grep -v 'link' | \
+    sed -e 's/\/_manifests\/tags\//:/' | \
+    sed -e 's/\/current//' | \
+    sed -e 's/^.*repositories\//    /' | \
+    sort > /tmp/a1
+cat /tmp/a1
+wc -l /tmp/a1 > /tmp/a2
+echo "Number of images: `cat /tmp/a2 | awk {'print $1'}`"
+echo "Disk space used:  `du -hs $REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY`"
+rm /tmp/a1 /tmp/a2`
+
+Output:
+
+`$ ./view-private-registry`
+busybox:latest
+gcr.io/google_containers/etcd:2.0.9
+gcr.io/google_containers/hyperkube:v0.21.2
+gcr.io/google_containers/pause:0.8.0
+google/cadvisor:latest
+jenkins:latest
+logstash:latest
+mongo:latest
+nginx:latest
+python:2.7
+redis:latest
+registry:2.1.1
+stackengine/controller:latest
+tomcat:7
+tomcat:latest
+ubuntu:14.04.2
+Number of images:   16
+Disk space used:    1.7G    /mnt/three/docker-registry/registry-data
+
+

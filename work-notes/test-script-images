@@ -1,0 +1,8 @@
+#!/bin/bash
+#	test-script-images  0.07.21  2018-05-19_09:40:32_CDT  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uthree  three.cptx86.com 0.06  
+#	   initital commit 
+# %W% %G% %U%
+#
+#	View local images locally via shell script
+#		
+grep -r -o "vars\.name=.* vars.reference=.*" /var/lib/docker/containers/* | cut -c 167-220 | sed 's/ver.*$//' | sed 's/vars\.name=//' | sed 's/ vars\.reference=/:/' | sort -u

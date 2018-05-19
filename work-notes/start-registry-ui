@@ -1,0 +1,41 @@
+#!/bin/bash
+#	start-registry-ui  0.07.21  2018-05-19_09:40:32_CDT  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uthree  three.cptx86.com 0.06  
+#	   initital commit 
+# %W% %G% %U%
+#
+#	Running registry-ui locally via Docker	clear;./start-registry-ui
+#			https://github.com/atc-/docker-registry-ui
+#	*****	current release does not yet support registry:2 *****
+PRIVATEREGISTRYPORT="5000"
+REGISTRYUIPORT="8582"
+#	***** Change to your network interface on this system (eth0 wlan0)
+NETWORKINTERFACE="eth0"
+#
+HOSTIP="`ifconfig $NETWORKINTERFACE | grep inet | awk {'print $2'} | cut -d: -f2`"
+PRIVATEREGISTRY="$HOSTIP:$PRIVATEREGISTRYPORT"
+echo "Private Registry Port	= $PRIVATEREGISTRYPORT:8080"
+echo "--- Registry UI: Port	= $REGISTRYUIPORT:8080"
+echo "Host IP Address		= $HOSTIP"
+echo "Private Registry URL 	= $PRIVATEREGISTRY"
+#
+#
+echo "	Step One:       Start Docker Registry UI:"
+docker run -d -p $REGISTRYUIPORT:8080 --name registry_ui -v /home/three/mnt-three/docker-registry/registry-ui:/var/lib/h2 --restart=always $PRIVATEREGISTRY/atcol/docker-registry-ui
+echo -e "\n	Open private registry:     http://$HOSTIP:$REGISTRYUIPORT/registry/index"
+echo "	***** Need to locate where the registry is stored and mount volume *****"
+echo "	***** by using -v, also need to find another private registry tool *****"
+CONTAINERID="`docker ps | grep "registry_ui" | cut -c1-12`"
+echo "	Container ID = $CONTAINERID"
+if [ -z $CONTAINERID ]
+then
+   echo "***** Container has not started, no container ID *****"
+else
+   CONTAINERIP="`docker inspect $CONTAINERID | grep IPAddress | head --lines=1 | awk {'print $2'} | cut -d\\" -f2 `"
+   echo "	Container IPAddress:	$CONTAINERIP"
+   echo -e "	To stop container enter,   docker stop $CONTAINERID; docker rm $CONTAINERID\n"
+fi
+#
+echo "	Run this command to stop every docker container:"
+echo "		 sudo docker ps -a | awk '{print $1}' | xargs docker kill"
+echo "	Run this command to remove all non-running containers; command will fail"
+echo "	on running containers -		docker rm \$(docker ps -qa)"

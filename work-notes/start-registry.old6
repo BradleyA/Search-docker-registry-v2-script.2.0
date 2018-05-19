@@ -1,0 +1,85 @@
+#!/bin/bash
+#	start-registry.old6  0.07.21  2018-05-19_09:40:32_CDT  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uthree  three.cptx86.com 0.06  
+#	   initital commit 
+# %W% %G% %U%
+#
+#	Running registry locally via Docker	clear;./start-registry
+#		
+IMAGENAME="registry"
+IMAGETAG="2.1.1"
+CONTAINERNAME="privte_registry"
+HOSTPORT1="5000"
+CONTAINERPORT1="5000"
+HOSTPORT2=""
+CONTAINERPORT2=""
+PRIVATEREGISTRY="192.168.1.102:5000"
+# ***** Change to your network interface on this system (eth0 wlan0)
+NETWORKINTERFACE="eth0"
+#
+HOSTIP="`ifconfig $NETWORKINTERFACE | grep inet | awk {'print $2'} | cut -d: -f2`"
+#
+echo "Container Port Map 1	= $HOSTPORT1:$CONTAINERPORT1"
+echo "Container Port Map 2	= $HOSTPORT2:$CONTAINERPORT2"
+echo "Host IP Address		= $HOSTIP"
+echo "Private Registry  	= $PRIVATEREGISTRY"
+#
+echo "	Step One:	Start Private Registry:"
+docker run -d -p $HOSTPORT1:$CONTAINERPORT1 --name $CONTAINERNAME  \
+       -v /mnt/three/docker-registry/registry-data:/tmp \
+       -v /mnt/three/TLS-cert/certs:/certs \
+       -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \
+       -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
+       -v /mnt/three/docker-registry/auth:/auth \
+       -e "REGISTRY_AUTH=htpasswd" \
+       -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
+       -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
+       $IMAGENAME:$IMAGETAG
+#
+#	***** 9/1/2015 - Unable to get authenticate login to work, skipping for a later time:
+#	***** Native basic auth		https://docs.docker.com/registry/deploying/
+##	three@three:/mnt/three/docker-registry$ docker login 192.168.1.102:5000
+##	Username: three
+##	Password: 
+##	Email: x
+##	Error response from daemon: no successful auth challenge for https://192.168.1.102:5000/v2/ - errors: []
+## 
+##       -v /mnt/three/docker-registry/auth:/auth \
+##       -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
+##       -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
+#
+#	***** 9/1/2015 - removing debug because was able to get TLS to work wiht private registry
+##       -e LOGLEVEL=INFO -e DEBUG=true \
+#
+#	***** 8/30/2015 - removed always during development because it is to difficult to stop and remote container
+##       --restart=always registry:2 
+#
+#	***** 8/27/2015 - removed because was unable to confirm if container was v2
+##       --restart=always $PRIVATEREGISTRY/registry:1508191703
+#
+#	***** 8/23/2015 - changed design to multi line format
+##	docker run -d -p $HOSTPORT1:$CONTAINERPORT1 --name $CONTAINERNAME -v /mnt/three/docker-registry/registry-data:/tmp --restart=always registry
+#
+echo "	Run command to determine if registry $PRIVATEREGISTRY is up:"
+echo "		docker search $PRIVATEREGISTRY/library"
+echo "		docker search $PRIVATEREGISTRY/google"
+echo "		docker search $PRIVATEREGISTRY/devopsil"
+#	Had to use the default /tmp directory vers /var/lib/registry because 
+#	Docker Registry UI uses /tmp and I was unable at this time to determine
+#	how to change Docker Registry UI. Plus Docker Registry UI has other issues;
+#	link displaying password on screen and storing password in text.
+#	Docker Registry UI does not support registry:2 - work under way to support
+CONTAINERID="`docker ps | grep $CONTAINERNAME | cut -c1-12`"
+echo "	Container ID = $CONTAINERID"
+if [ -z $CONTAINERID ]
+then
+   echo "***** Container has not started, no container ID *****"
+else
+   CONTAINERIP="`docker inspect $CONTAINERID | grep IPAddress | head --lines=1 | awk {'print $2'} | cut -d\\" -f2 `"
+   echo "	Container IPAddress:	$CONTAINERIP"
+   echo -e "	To stop container enter,   docker stop $CONTAINERID; docker rm $CONTAINERID\n"
+fi
+#
+echo "	Run this command to stop every docker container:"
+echo "		 sudo docker ps -a | awk '{print $1}' | xargs docker kill"
+echo "	Run this command to remove all non-running containers; command will fail"
+echo "	on running containers - docker rm \$(docker ps -qa)"
