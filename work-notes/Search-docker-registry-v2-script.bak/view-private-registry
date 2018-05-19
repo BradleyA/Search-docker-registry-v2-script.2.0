@@ -1,0 +1,42 @@
+#!/bin/bash
+#	view-private-registry  0.10.25  2018-05-19_09:49:13_CDT  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uthree  three.cptx86.com 0.09  
+#	   initital commit 
+# %W% %G% %U%
+#
+#	View private registry v2,
+#		if PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY is mounted on your system
+#
+#	Enter the full path to your private registry v2 
+PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="/mnt/three/docker-registry/registry-data"
+######################################
+#	Add code to support multiple private registries 
+#	These could be repositories inside one registry
+#	Example registries:	
+#				-r, --registry="dev"
+#				dev (development) default
+#				fvt (function verification test)
+#				gvt (global verification test)
+#				svt (security verification test)
+#				plisp (performance/load/integration/stress/platform test)
+#				prom (promote release)
+#				prod (production)
+#				roll (roll back staging)
+#				hist (historic)
+#				v2 (/var/lib/registry)
+######################################
+#	Add code to test if PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY is mounted on system; else exit with message
+######################################
+#
+find $PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY -print | \
+	grep 'v2/repositories' | \
+	grep 'current' | \
+	grep -v 'link' | \
+	sed -e 's/\/_manifests\/tags\//:/' | \
+	sed -e 's/\/current//' | \
+	sed -e 's/^.*repositories\//	/' | \
+	sort > /tmp/a1
+cat /tmp/a1
+wc -l /tmp/a1 > /tmp/a2
+echo "Number of images:	`cat /tmp/a2 | awk {'print $1'}`"
+echo "Disk space used:	`du -hs $PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY`"
+rm /tmp/a1 /tmp/a2
