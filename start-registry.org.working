@@ -1,0 +1,124 @@
+#!/bin/bash
+#	start-registry.org.working  0.11.35  2019-02-18T23:25:59.234385-06:00 (CST)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.10-9-g3a403cc  
+#	   begin creating the changes that have been used during testing 
+# %W% %G% %U%
+#	set -x
+#	set -v
+#
+#	Running registry locally via Docker	clear;./start-registry
+#		
+IMAGENAME="registry"
+IMAGETAG="2"
+CONTAINERNAME="private_registry"
+HOSTPORT1="5000"
+CONTAINERPORT1="5000"
+HOSTPORT2=""
+CONTAINERPORT2=""
+PRIVATEREGISTRY="two.cptx86.com:5000/"
+# ***** Change to your network interface on this system (eth0 wlan0)
+NETWORKINTERFACE="eth0"
+#
+HOSTIP="`ifconfig ${NETWORKINTERFACE} | grep inet | awk {'print $2'} | cut -d: -f2`"
+#
+echo "Container Port Map 1	= ${HOSTPORT1}:${CONTAINERPORT1}"
+echo "Container Port Map 2	= ${HOSTPORT2}:${CONTAINERPORT2}"
+echo "Host IP Address		= ${HOSTIP}"
+echo "Private Registry  	= ${PRIVATEREGISTRY}"
+#
+echo "	Step One:	Start Private Registry:"
+#
+CONTAINERID="`docker ps | grep ${CONTAINERNAME} | cut -c1-12`"
+if [ -z $CONTAINERID ]
+then
+	set -x
+docker run -d \
+    --name ${CONTAINERNAME}  \
+    --restart=always \
+    -p ${HOSTPORT1}:${CONTAINERPORT1} \
+    -v /usr/local/docker-registry:/var/lib/registry \
+    -e REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry \
+    -v /registry-certs:/certs \
+    -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \
+    -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
+    ${PRIVATEREGISTRY}${IMAGENAME}:${IMAGETAG}
+#    -v /mnt/three/docker-registry/auth:/auth \
+#    -e "REGISTRY_AUTH=htpasswd" \
+#    -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
+#    -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
+	set +x
+else
+   echo "***** Container is already runnings *****"
+   exit
+fi
+##
+#       -v /mnt/three/docker-registry:/var/lib/registry \ # ***** mount volume in container to store images
+#	-e REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry	# ***** environment variable for registry storage location
+#       -v /mnt/three/TLS-cert/certs:/certs \				# ***** mount volume in container for TLS CA certificates
+#       -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \		# ***** environment variable for TLS
+#       -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \			# ***** environment variable for TLS
+#       -v /mnt/three/docker-registry/auth:/auth \			# ***** mount volume in container for authentication
+#       -e "REGISTRY_AUTH=htpasswd" \					# ***** environment variable for authentication
+#       -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \		# ***** environment variable for authentication
+#       -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \			# ***** environment variable for authentication
+##
+##
+##	Example:	Docker-Compose.yml file
+#	registry:
+#	  restart: always
+#	  image: registry:2.1.1
+#	  ports:
+#	    - 5000:5000
+#	  environment:
+#	    REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /var/lib/registry
+#	    REGISTRY_HTTP_TLS_CERTIFICATE: /certs/domain.crt
+#	    REGISTRY_HTTP_TLS_KEY: /certs/domain.key
+#	    REGISTRY_AUTH: htpasswd
+#	    REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+#	    REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+#	  volumes:
+#	    - /mnt/three/docker-registry:/var/lib/registry
+#	    - /mnt/three/TLS-cert/certs:/certs
+#	    - /mnt/three/docker-registry/auth:/auth
+##
+#	***** 9/1/2015 - Unable to get authenticate login to work, skipping for a later time:
+#	***** Native basic auth		https://docs.docker.com/registry/deploying/
+##	three@three:/mnt/three/docker-registry$ docker login 192.168.1.102:5000
+##	Username: three
+##	Password: 
+##	Email: x
+##	Error response from daemon: no successful auth challenge for https://192.168.1.102:5000/v2/ - errors: []
+## 
+##       -v /mnt/three/docker-registry/auth:/auth \
+##       -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
+##       -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
+#
+#	***** 9/1/2015 - removing debug because was able to get TLS to work with private registry
+##       -e LOGLEVEL=INFO -e DEBUG=true \
+#
+#	***** 8/30/2015 - removed always during development testing because it is to difficult to stop container
+##       --restart=always registry:2 
+#
+#	***** 8/27/2015 - removed because was unable to confirm if container was v2
+##       --restart=always ${PRIVATEREGISTRY}/registry:1508191703
+#
+#	***** 8/23/2015 - changed design to multi line format
+##	docker run -d -p ${HOSTPORT1}:${CONTAINERPORT1} --name ${CONTAINERNAME} -v /mnt/three/docker-registry:/tmp --restart=always registry
+#
+echo "	Run command to determine if registry ${PRIVATEREGISTRY} is up:"
+echo "		docker search ${PRIVATEREGISTRY}/library"
+echo "		docker search ${PRIVATEREGISTRY}/google"
+echo "		docker search ${PRIVATEREGISTRY}/devopsil"
+#
+CONTAINERID="`docker ps | grep ${CONTAINERNAME} | cut -c1-12`"
+echo "	Container ID = ${CONTAINERID}"
+if [ -z ${CONTAINERID} ]
+then
+   echo "***** Container has not started, no container ID *****"
+else
+   CONTAINERIP="`docker inspect ${CONTAINERID} | grep IPAddress | head --lines=1 | awk {'print $2'} | cut -d\\" -f2 `"
+   echo "	Container IPAddress:	${CONTAINERIP}"
+   echo -e "	To stop container enter,   docker stop ${CONTAINERID}; docker rm ${CONTAINERID}\n"
+   docker logs ${CONTAINERID} > .$(hostname).${CONTAINERNAME}.${CONTAINERID}.log 2>&1
+   tail .$(hostname).${CONTAINERNAME}.${CONTAINERID}.log
+fi
+#
