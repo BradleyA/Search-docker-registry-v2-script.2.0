@@ -1,4 +1,6 @@
 #!/bin/bash
+#	docker-search  0.13.37  2019-02-21T12:56:34.520837-06:00 (CST)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.12  
+#	   add comment with directory 
 #	docker-search  0.12.36  2019-02-21T12:34:55.804757-06:00 (CST)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.11  
 #	   add markit to file 
 #
@@ -14,7 +16,9 @@
 if [ -z ${PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY} ]
 then
 #    PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="/mnt/three/docker-registry/registry-data"
-    PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="/usr/local/docker-registry-$REGISTRY_PORT/docker"
+    PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="/usr/local/docker-registry-$REGISTRY_PORT/docker/dev1"
+#	Need to look at this directory structure
+#		/usr/local/docker-registry-17313/docker/registry/v2/repositories/{dev1,dev2,dev3,docker,x prod,prom,svt1}
 fi
 #
 #####	Change the registry flag name to the full path of your teams private registries if more than one registry is used.
