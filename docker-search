@@ -1,4 +1,6 @@
 #!/bin/bash
+#	docker-search  0.15.39  2019-02-22T10:02:11.608220-06:00 (CST)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.14  
+#	   modify repostory path 
 #	docker-search  0.14.38  2019-02-22T09:24:24.216196-06:00 (CST)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.13  
 #	   design changes on repository directory variables 
 #	docker-search  0.13.37  2019-02-21T12:56:34.520837-06:00 (CST)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.12  
@@ -27,28 +29,32 @@ fi
 #####	Change the registry flag name to the full path of your teams private registries if more than one registry is used.
 #	Each team requires control over the image while it is moving through the teams process.
 #
+#	dev (development)
+DEV_REGISTRY="dev"
+#	dev1 (development team 1)
+DEV1_REGISTRY="dev1"
+#	dev2 (development team 2)
+DEV2_REGISTRY="dev2"
+#	dev3 (development team 3)
+DEV3_REGISTRY="dev3"
 #	fvt (function verification test)
-FVT_REGISTRY="docker/registry/v2/repositories/fvt"
+FVT_REGISTRY="fvt"
 #	gvt (global verification test)
-GVT_REGISTRY="docker/registry/v2/repositories/gvt"
+GVT_REGISTRY="gvt"
 #	svt (security verification test)
-SVT_REGISTRY="docker/registry/v2/repositories/svt"
+SVT_REGISTRY="svt"
 #	plisp (performance/load/integration/stress/platform test)
-PLISP_REGISTRY="docker/registry/v2/repositories/plisp"
+PLISP_REGISTRY="plisp"
 #	prom (promote release staging)
-PROM_REGISTRY="docker/registry/v2/repositories/prom"
+PROM_REGISTRY="prom"
 #	prod (production)
-PROD_REGISTRY="docker/registry/v2/repositories/prod"
+PROD_REGISTRY="prod"
 #	roll (roll back staging)
-ROLL_REGISTRY="docker/registry/v2/repositories/roll"
+ROLL_REGISTRY="roll"
 #	hist (historic)
-HIST_REGISTRY="docker/registry/v2/repositories/hist"
+HIST_REGISTRY="hist"
 #	v2 (/var/lib/registry)	This is the docker registry default location. 
 v2_REGISTRY="/var/lib/registry"
-#
-#####	Define the default registry dev (development)
-#
-REGISTRY_NAME=dev
 #
 #####	Parse command flags
 #
@@ -65,6 +71,9 @@ case $key in
     echo -e "\nSearch Private Docker Registry v2 for images\n"
     echo "  -h, --help=false      Print usage"
     echo "  -r, --registry dev    dev (development)  default"
+    echo "                 dev1   dev1 (development team 1)"
+    echo "                 dev2   dev2 (development team 2)"
+    echo "                 dev3   dev3 (development team 3)"
     echo "                        fvt (function verification test)"
     echo "                        gvt (global verification test)"
     echo "                        svt (security verification test)"
@@ -91,15 +100,18 @@ done
 #####	Set REGISTRY_ROOTDIRECTORY according to flag entered on command line.
 #
 case $REGISTRY_NAME in
-    dev)	;;
-    fvt)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}/${FVT_REGISTRY};;
-    gvt)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}/${GVT_REGISTRY};;
-    svt)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}/${SVT_REGISTRY};;
-    plisp)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}/${PLISP_REGISTRY};;
-    prom)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}/${PROM_REGISTRY};;
-    prod)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}/${PROD_REGISTRY};;
-    roll)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}/${ROLL_REGISTRY};;
-    hist)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}/${HIST_REGISTRY};;
+    dev)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}docker/registry/v2/repositories/${DEV_REGISTRY};;
+    dev1)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}docker/registry/v2/repositories/${DEV1_REGISTRY};;
+    dev2)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}docker/registry/v2/repositories/${DEV2_REGISTRY};;
+    dev3)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}docker/registry/v2/repositories/${DEV3_REGISTRY};;
+    fvt)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}docker/registry/v2/repositories/${FVT_REGISTRY};;
+    gvt)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}docker/registry/v2/repositories/${GVT_REGISTRY};;
+    svt)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}docker/registry/v2/repositories/${SVT_REGISTRY};;
+    plisp)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}docker/registry/v2/repositories/${PLISP_REGISTRY};;
+    prom)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}docker/registry/v2/repositories/${PROM_REGISTRY};;
+    prod)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}docker/registry/v2/repositories/${PROD_REGISTRY};;
+    roll)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}docker/registry/v2/repositories/${ROLL_REGISTRY};;
+    hist)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}docker/registry/v2/repositories/${HIST_REGISTRY};;
     v2)		REGISTRY_ROOTDIRECTORY="/var/lib/registry";;
 esac
 #
