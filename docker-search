@@ -1,11 +1,13 @@
 #!/bin/bash
+#	docker-search  0.14.38  2019-02-22T09:24:24.216196-06:00 (CST)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.13  
+#	   design changes on repository directory variables 
 #	docker-search  0.13.37  2019-02-21T12:56:34.520837-06:00 (CST)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.12  
 #	   add comment with directory 
 #	docker-search  0.12.36  2019-02-21T12:34:55.804757-06:00 (CST)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.11  
 #	   add markit to file 
 #
 ###	View private registry v2,
-#		if PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY is mounted on your system
+#		if PERSISTENT REGISTRY_ROOTDIRECTORY is mounted on your system
 #	Need to test when future release support
 #		Configurable trust servers for users running a private registry
 #
@@ -13,35 +15,36 @@
 #	This is the default and the only registry that is required to be defined in this script
 #	If the environment variable is defined it will over ride the setting of this script variable.
 #
-if [ -z ${PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY} ]
+if [ -z ${REGISTRY_ROOTDIRECTORY} ]
 then
-#    PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="/mnt/three/docker-registry/registry-data"
-    PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="/usr/local/docker-registry-$REGISTRY_PORT/docker/dev1"
+#    REGISTRY_ROOTDIRECTORY="/mnt/three/docker-registry/registry-data"
+    REGISTRY_ROOTDIRECTORY="/usr/local/docker-registry-$REGISTRY_PORT/"
 #	Need to look at this directory structure
 #		/usr/local/docker-registry-17313/docker/registry/v2/repositories/{dev1,dev2,dev3,docker,x prod,prom,svt1}
+#		docker-registry-17313/docker/registry/v2/repositories
 fi
 #
 #####	Change the registry flag name to the full path of your teams private registries if more than one registry is used.
 #	Each team requires control over the image while it is moving through the teams process.
 #
 #	fvt (function verification test)
-FVT_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="fvt"
+FVT_REGISTRY="docker/registry/v2/repositories/fvt"
 #	gvt (global verification test)
-GVT_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="gvt"
+GVT_REGISTRY="docker/registry/v2/repositories/gvt"
 #	svt (security verification test)
-SVT_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="svt"
+SVT_REGISTRY="docker/registry/v2/repositories/svt"
 #	plisp (performance/load/integration/stress/platform test)
-PLISP_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="plisp"
+PLISP_REGISTRY="docker/registry/v2/repositories/plisp"
 #	prom (promote release staging)
-PROM_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="prom"
+PROM_REGISTRY="docker/registry/v2/repositories/prom"
 #	prod (production)
-PROD_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="prod"
+PROD_REGISTRY="docker/registry/v2/repositories/prod"
 #	roll (roll back staging)
-ROLL_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="roll"
+ROLL_REGISTRY="docker/registry/v2/repositories/roll"
 #	hist (historic)
-HIST_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="hist"
+HIST_REGISTRY="docker/registry/v2/repositories/hist"
 #	v2 (/var/lib/registry)	This is the docker registry default location. 
-v2_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY="/var/lib/registry"
+v2_REGISTRY="/var/lib/registry"
 #
 #####	Define the default registry dev (development)
 #
@@ -61,7 +64,7 @@ case $key in
     echo "Usage: docker-search [OPTIONS] [IMAGE_NAME]"
     echo -e "\nSearch Private Docker Registry v2 for images\n"
     echo "  -h, --help=false      Print usage"
-    echo "  -r, --registry=dev    dev (development)  default"
+    echo "  -r, --registry dev    dev (development)  default"
     echo "                        fvt (function verification test)"
     echo "                        gvt (global verification test)"
     echo "                        svt (security verification test)"
@@ -85,38 +88,38 @@ esac
 shift
 done
 #
-#####	Set PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY according to flag entered on command line.
+#####	Set REGISTRY_ROOTDIRECTORY according to flag entered on command line.
 #
 case $REGISTRY_NAME in
     dev)	;;
-    fvt)	PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=${FVT_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY};;
-    gvt)	PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=${GVT_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY};;
-    svt)	PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=${SVT_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY};;
-    plisp)	PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=${PLISP_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY};;
-    prom)	PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=${PROM_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY};;
-    prod)	PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=${PROD_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY};;
-    roll)	PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=${ROLL_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY};;
-    hist)	PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=${HIST_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY};;
-    v2)		PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=${v2_PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY};;
+    fvt)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}/${FVT_REGISTRY};;
+    gvt)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}/${GVT_REGISTRY};;
+    svt)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}/${SVT_REGISTRY};;
+    plisp)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}/${PLISP_REGISTRY};;
+    prom)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}/${PROM_REGISTRY};;
+    prod)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}/${PROD_REGISTRY};;
+    roll)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}/${ROLL_REGISTRY};;
+    hist)	REGISTRY_ROOTDIRECTORY=${REGISTRY_ROOTDIRECTORY}/${HIST_REGISTRY};;
+    v2)		REGISTRY_ROOTDIRECTORY="/var/lib/registry";;
 esac
 #
 #####	Print debug information
 #
-echo -e "\nPERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY = ${PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY}"
+echo -e "\nREGISTRY_ROOTDIRECTORY = ${REGISTRY_ROOTDIRECTORY}"
 echo REGISTRY_NAME  = "${REGISTRY_NAME}"
 echo IMAGE_NAME     = "${IMAGE_NAME}"
 #
-#####	Test if PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY is a directory
+#####	Test if REGISTRY_ROOTDIRECTORY is a directory
 #
-if [ ! -d "${PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY}" ]
+if [ ! -d "${REGISTRY_ROOTDIRECTORY}" ]
 then
-    echo "WARNING: ${PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY} is not a directory."
+    echo "WARNING: ${REGISTRY_ROOTDIRECTORY} is not a directory."
     exit 0
 fi
 #
 #####	May need to tweak as registry releases change file name format
 #
-find ${PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY} -print | \
+find ${REGISTRY_ROOTDIRECTORY} -print | \
 	grep 'v2/repositories' | \
 	grep 'current' | \
 	grep -v 'link' | \
@@ -132,5 +135,5 @@ else
 fi
 wc -l /tmp/a1 > /tmp/a2
 echo "Number of images:	`cat /tmp/a2 | awk {'print $1'}`"
-echo "Disk space used:	`du -hs ${PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY}`"
+echo "Disk space used:	`du -hs ${REGISTRY_ROOTDIRECTORY}`"
 rm /tmp/a1 /tmp/a2
