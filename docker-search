@@ -1,19 +1,100 @@
 #!/bin/bash
-#	docker-search  0.15.39  2019-02-22T10:02:11.608220-06:00 (CST)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.14  
-#	   modify repostory path 
-#	docker-search  0.14.38  2019-02-22T09:24:24.216196-06:00 (CST)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.13  
-#	   design changes on repository directory variables 
-#	docker-search  0.13.37  2019-02-21T12:56:34.520837-06:00 (CST)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.12  
-#	   add comment with directory 
-#	docker-search  0.12.36  2019-02-21T12:34:55.804757-06:00 (CST)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.11  
-#	   add markit to file 
+#	docker-search  0.16.40  2019-02-22T11:03:38.277789-06:00 (CST)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.15  
+#	   begin updating script to production 5 
 #
+### docker-search
+#       Copyright (c) 2019 Bradley Allen
+#       License is in the online DOCUMENTATION, DOCUMENTATION URL defined below.
 ###	View private registry v2,
 #		if PERSISTENT REGISTRY_ROOTDIRECTORY is mounted on your system
 #	Need to test when future release support
 #		Configurable trust servers for users running a private registry
-#
-#####	Enter the full path to your dev (development) private registry v2 
+###
+#   production standard 5
+#       Order of precedence: environment variable, default code
+if [ "${DEBUG}" == "" ] ; then DEBUG="0" ; fi   # 0 = debug off, 1 = debug on, 'export DEBUG=1', 'unset DEBUG' to unset environment variable (bash)
+#	set -x
+#	set -v
+BOLD=$(tput -Txterm bold)
+NORMAL=$(tput -Txterm sgr0)
+###
+display_help() {
+echo -e "\n${NORMAL}${0} - list repository images"
+echo -e "\nUSAGE\n   ${0} [XX | YY | ZZ]"
+echo    "   ${0} [--file <PATH>/<FILE_NAME> | -f <PATH>/<FILE_NAME>]"
+echo    "   ${0} [--help | -help | help | -h | h | -?]"
+echo    "   ${0} [--version | -version | -v]"
+echo -e "\nDESCRIPTION"
+#       Displaying help DESCRIPTION in English en_US.UTF-8
+echo    "<your help goes here>" 
+echo    ">>> NEED TO COMPLETE THIS SOON, ONCE I KNOW HOW IT IS GOING TO WORK :-) <<<"
+echo -e "\n<<Paragraph two>>"
+#       Displaying help DESCRIPTION in French fr_CA.UTF-8, fr_FR.UTF-8, fr_CH.UTF-8
+if [ "${LANG}" == "fr_CA.UTF-8" ] || [ "${LANG}" == "fr_FR.UTF-8" ] || [ "${LANG}" == "fr_CH.UTF-8" ] ; then
+	echo -e "\n--> ${LANG}"
+	echo    "<votre aide va ici>" # your help goes here
+	echo    "Souhaitez-vous traduire la section description?" # Do you want to translate the description section?
+elif ! [ "${LANG}" == "en_US.UTF-8" ] ; then
+        get_date_stamp ; echo -e "${NORMAL}${DATE_STAMP} ${LOCALHOST} ${0}[$$] ${SCRIPT_VERSION} ${LINENO} ${USER} ${USER_ID}:${GROUP_ID} ${BOLD}[WARN]${NORMAL}  Your language, ${LANG}, is not supported.  Would you like to translate the description section?" 1>&2
+fi
+echo -e "\nEnvironment Variables"
+echo    "If using the bash shell, enter; 'export DEBUG=1' on the command line to set"
+echo    "the DEBUG environment variable to '1' (0 = debug off, 1 = debug on).  Use the"
+echo    "command, 'unset DEBUG' to remove the exported information from the DEBUG"
+echo    "environment variable.  You are on your own defining environment variables if"
+echo    "you are using other shells."
+echo    "   DEBUG       (default '0')"
+echo -e "\n   <<your environment variables information goes here>>"
+echo -e "\nOPTIONS\n   -f, --file\n      path and file on system '<path>/<file_name>'"
+echo -e "\nOPTIONS\n   Option one - description"
+echo    "   XX       xxx xxxxxxx xxx"
+echo    "   YY       xxx xxxxx xxx "
+echo    "   zz       xx xxxxxxx xx"
+echo -e "\nDOCUMENTATION\n   https://github.com/BradleyA/   <<URL to online repository README>>"
+echo -e "\nEXAMPLES\n   ${BOLD}${0} <<code example goes here>>${NORMAL}\n\n   <<your code examples description goes here>>\n"
+}
+
+#	Date and time function ISO 8601
+get_date_stamp() {
+DATE_STAMP=$(date +%Y-%m-%dT%H:%M:%S.%6N%:z)
+TEMP=$(date +%Z)
+DATE_STAMP="${DATE_STAMP} (${TEMP})"
+}
+
+#	Fully qualified domain name FQDN hostname
+LOCALHOST=$(hostname -f)
+
+#	Version
+SCRIPT_NAME=$(head -2 "${0}" | awk {'printf $2'})
+SCRIPT_VERSION=$(head -2 "${0}" | awk {'printf $3'})
+
+#	UID and GID
+USER_ID=$(id -u)
+GROUP_ID=$(id -g)
+
+#       Added line because USER is not defined in crobtab jobs
+if ! [ "${USER}" == "${LOGNAME}" ] ; then  USER=${LOGNAME} ; fi
+if [ "${DEBUG}" == "1" ] ; then get_date_stamp ; echo -e "${NORMAL}${DATE_STAMP} ${LOCALHOST} ${0}[$$] ${SCRIPT_VERSION} ${LINENO} ${USER} ${USER_ID}:${GROUP_ID} ${BOLD}[DEBUG]${NORMAL}  Setting USER to support crobtab...  USER >${USER}<  LOGNAME >${LOGNAME}<" 1>&2 ; fi
+
+#	Default help and version arguments
+if [ "$1" == "--help" ] || [ "$1" == "-help" ] || [ "$1" == "help" ] || [ "$1" == "-h" ] || [ "$1" == "h" ] || [ "$1" == "-?" ] ; then
+	display_help | more
+	exit 0
+fi
+if [ "$1" == "--version" ] || [ "$1" == "-version" ] || [ "$1" == "version" ] || [ "$1" == "-v" ] ; then
+	echo "${SCRIPT_NAME} ${SCRIPT_VERSION}"
+	exit 0
+fi
+
+#	INFO
+get_date_stamp ; echo -e "${NORMAL}${DATE_STAMP} ${LOCALHOST} ${0}[$$] ${SCRIPT_VERSION} ${LINENO} ${USER} ${USER_ID}:${GROUP_ID} ${BOLD}[INFO]${NORMAL}  Started..." 1>&2
+
+#	DEBUG
+if [ "${DEBUG}" == "1" ] ; then get_date_stamp ; echo -e "${NORMAL}${DATE_STAMP} ${LOCALHOST} ${0}[$$] ${SCRIPT_VERSION} ${LINENO} ${USER} ${USER_ID}:${GROUP_ID} ${BOLD}[DEBUG]${NORMAL}  Name_of_command >${0}< Name_of_arg1 >${1}< Name_of_arg2 >${2}< Name_of_arg3 >${3}<  Version of bash ${BASH_VERSION}" 1>&2 ; fi
+
+#-->>>>>>>>>>>>>>>>>>>>>>>
+
+###	Enter the full path to your dev (development) private registry v2 
 #	This is the default and the only registry that is required to be defined in this script
 #	If the environment variable is defined it will over ride the setting of this script variable.
 #
