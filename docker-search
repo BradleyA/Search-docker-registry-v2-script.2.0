@@ -1,15 +1,16 @@
 #!/bin/bash
+#	docker-search  0.17.41  2019-08-11T09:00:00.557122-05:00 (CDT)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.16  
+#	   addition minor chamges 
 #	docker-search  0.16.40  2019-02-22T11:03:38.277789-06:00 (CST)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.15  
 #	   begin updating script to production 5 
-#
 ### docker-search
-#       Copyright (c) 2019 Bradley Allen
-#       License is in the online DOCUMENTATION, DOCUMENTATION URL defined below.
 ###	View private registry v2,
 #		if PERSISTENT REGISTRY_ROOTDIRECTORY is mounted on your system
 #	Need to test when future release support
 #		Configurable trust servers for users running a private registry
 ###
+#       Copyright (c) 2019 Bradley Allen
+#       License is in the online DOCUMENTATION, DOCUMENTATION URL defined below.
 #   production standard 5
 #       Order of precedence: environment variable, default code
 if [ "${DEBUG}" == "" ] ; then DEBUG="0" ; fi   # 0 = debug off, 1 = debug on, 'export DEBUG=1', 'unset DEBUG' to unset environment variable (bash)
@@ -19,7 +20,7 @@ BOLD=$(tput -Txterm bold)
 NORMAL=$(tput -Txterm sgr0)
 ###
 display_help() {
-echo -e "\n${NORMAL}${0} - list repository images"
+echo -e "\n${NORMAL}${0} - view private local repository images"
 echo -e "\nUSAGE\n   ${0} [XX | YY | ZZ]"
 echo    "   ${0} [--file <PATH>/<FILE_NAME> | -f <PATH>/<FILE_NAME>]"
 echo    "   ${0} [--help | -help | help | -h | h | -?]"
@@ -92,6 +93,14 @@ get_date_stamp ; echo -e "${NORMAL}${DATE_STAMP} ${LOCALHOST} ${0}[$$] ${SCRIPT_
 #	DEBUG
 if [ "${DEBUG}" == "1" ] ; then get_date_stamp ; echo -e "${NORMAL}${DATE_STAMP} ${LOCALHOST} ${0}[$$] ${SCRIPT_VERSION} ${LINENO} ${USER} ${USER_ID}:${GROUP_ID} ${BOLD}[DEBUG]${NORMAL}  Name_of_command >${0}< Name_of_arg1 >${1}< Name_of_arg2 >${2}< Name_of_arg3 >${3}<  Version of bash ${BASH_VERSION}" 1>&2 ; fi
 
+# >>>	#       Order of precedence: CLI argument, environment variable, default code
+# >>>	if [ $# -ge  1 ]  ; then CLUSTER=${1} ; elif [ "${CLUSTER}" == "" ] ; then CLUSTER="us-tx-cluster-1/" ; fi
+# >>>	#       Order of precedence: CLI argument, default code
+# >>>	ADMUSER=${2:-${USER}}
+# >>>	#       Order of precedence: CLI argument, environment variable, default code
+# >>>	if [ $# -ge  3 ]  ; then DATA_DIR=${3} ; elif [ "${DATA_DIR}" == "" ] ; then DATA_DIR="/usr/local/data/" ; fi
+# >>>	if [ "${DEBUG}" == "1" ] ; then get_date_stamp ; echo -e "${NORMAL}${DATE_STAMP} ${LOCALHOST} ${0}[$$] ${SCRIPT_VERSION} ${LINENO} ${USER} ${USER_ID}:${GROUP_ID} ${BOLD}[DEBUG]${NORMAL}  Variable... CLUSTER >${CLUSTER}< ADMUSER >${ADMUSER}< DATA_DIR >${DATA_DIR}<" 1>&2 ; fi
+# >>>	
 #-->>>>>>>>>>>>>>>>>>>>>>>
 
 ###	Enter the full path to your dev (development) private registry v2 
