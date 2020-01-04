@@ -1,6 +1,7 @@
 ## Search-docker-registry-v2-script.2.0
 
 ### STOP:  This is NOT ready for development or production ... it is in design, prototyping the design, and hopfully development and test
+
 #### WARNING: These instructions are incomplete. Consider them as notes quickly drafted on a napkin rather than proper documentation!
 
 #### Support more than one private registry:v2 on the same host
@@ -59,6 +60,12 @@ Move the script or create a symbolic link to a location in your working path; ex
 #### Version of registry v2 using
  * registry github.com/docker/distribution v2.1.1
 
+#### ARCHITECTURE TREE
+
+#### Traffic
+  * <img alt="Clones" src="https://img.shields.io/static/v1?label=Clones&message=8&color=blue">  [Clones Table](images/clone.table.md)
+  * <img alt="Views" src="https://img.shields.io/static/v1?label=Views&message=17&color=blue">  [Views Table](images/view.table.md)
+  
 #### Author
 [<img id="twitter" src="images/twitter.png" width="50" a="twitter.com/bradleyaustintx/">
 ](https://twitter.com/bradleyaustintx/)   [<img id="github" src="images/github.png" width="50" a="https://github.com/BradleyA/">
@@ -73,10 +80,10 @@ Move the script or create a symbolic link to a location in your working path; ex
  * Be usable as non-root
  * Be easy to install and configure
 
-## License
+#### License
 MIT License
 
-Copyright (c) 2019  [Bradley Allen](https://www.linkedin.com/in/bradleyhallen)
+Copyright (c) 2020  [Bradley Allen](https://www.linkedin.com/in/bradleyhallen)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
