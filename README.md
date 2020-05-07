@@ -63,7 +63,7 @@ Move the script or create a symbolic link to a location in your working path; ex
 #### ARCHITECTURE TREE
 
 #### Traffic
-  * <img alt="Clones" src="https://img.shields.io/static/v1?label=Clones&message=8&color=blue">  [Clones Table](images/clone.table.md)
+  * <img alt="Clones" src="https://img.shields.io/static/v1?label=Clones&message=26&color=blue">  [Clones Table](images/clone.table.md)
   * <img alt="Views" src="https://img.shields.io/static/v1?label=Views&message=17&color=blue">  [Views Table](images/view.table.md)
   
 #### Author
