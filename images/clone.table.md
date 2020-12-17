@@ -17,4 +17,4 @@ Total clones: 10
 ###### Updated: 2020-01-04
 **Note**  Data collection stopped between 10/14/2019 & 12/9/2019
 
-[Return to README](https://github.com/BradleyA/Search-docker-registry-v2-script.2.0#traffic)
+[Return to README](https://github.com/BradleyA/Search-docker-registry-v2-script.2.0)
