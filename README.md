@@ -64,7 +64,7 @@ Move the script or create a symbolic link to a location in your working path; ex
 
 #### Traffic
   * <img alt="Clones" src="https://img.shields.io/static/v1?label=Clones&message=61&color=blue">  [Clones Table](images/clone.table.md)
-  * <img alt="Views" src="https://img.shields.io/static/v1?label=Views&message=51&color=blue">  [Views Table](images/view.table.md)
+  * <img alt="Views" src="https://img.shields.io/static/v1?label=Views&message=103&color=blue">  [Views Table](images/view.table.md)
 
 #### Author
 [<img id="github" src="images/github.png" width="50" a="https://github.com/BradleyA/">](https://github.com/BradleyA/)    [<img src="images/linkedin.png" style="max-width:100%;" >](https://www.linkedin.com/in/bradleyhallen) [<img id="twitter" src="images/twitter.png" width="50" a="twitter.com/bradleyaustintx/">](https://twitter.com/bradleyaustintx/)       <a href="https://twitter.com/intent/follow?screen_name=bradleyaustintx"> <img src="https://img.shields.io/twitter/follow/bradleyaustintx.svg?label=Follow%20@bradleyaustintx" alt="Follow @bradleyaustintx" />    </a>
