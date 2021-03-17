@@ -1,4 +1,6 @@
 #!/bin/bash
+#	view-private-registry  1.1.1.72  2021-03-17T16:07:30.318806-05:00 (CDT)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  master  uadmin  two-rpi3b.cptx86.com 0.17-30-g9e312ef  
+#	   view-private-registry -->   Sort image tags by version instead of purely alphabetically, change output order to latest version first  
 #	view-private-registry  0.11.35  2019-02-18T23:26:01.939403-06:00 (CST)  https://github.com/BradleyA/Search-docker-registry-v2-script.2.0.git  uadmin  two.cptx86.com 0.10-9-g3a403cc  
 #	   begin creating the changes that have been used during testing 
 
@@ -48,7 +50,7 @@ find $PERSISTENT_REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY -print | \
 	sed -e 's/\/_manifests\/tags\//:/' | \
 	sed -e 's/\/current//' | \
 	sed -e 's/^.*repositories\//	/' | \
-	sort > /tmp/a1
+	sort -Vr > /tmp/a1
 #       If $ARG2 is set then filter the image output with $ARG2
 if [ -z $ARG2 ]; then
 	cat /tmp/a1
